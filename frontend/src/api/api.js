@@ -26,10 +26,21 @@ async function request(path, options = {}) {
 
   let res;
   try {
-    res = await fetch(url, { ...options, headers });
+    // Add timeout for fetch requests (5 seconds)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    res = await fetch(url, { ...options, headers, signal: controller.signal });
+    clearTimeout(timeoutId);
   } catch (networkErr) {
+    if (networkErr.name === 'AbortError') {
+      console.error("[api] Request timeout:", url);
+      const err = new Error("Request timeout - backend may be unreachable");
+      err.cause = networkErr;
+      throw err;
+    }
     console.error("[api] Network error:", networkErr);
-    const err = new Error("Network error");
+    const err = new Error("Network error: " + networkErr.message);
     err.cause = networkErr;
     throw err;
   }
