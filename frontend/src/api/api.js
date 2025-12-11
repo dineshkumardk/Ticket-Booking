@@ -1,4 +1,18 @@
-const BASE = import.meta.env.VITE_API_BASE || "https://ticket-booking-l9aj.onrender.com";
+// src/api.jsx
+// tries both names so whichever env you set will work
+const BASE =
+  import.meta.env.VITE_API_BASE ||
+  import.meta.env.VITE_API_URL ||
+  "https://ticket-booking-l9aj.onrender.com";
+
+async function safeJson(text) {
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text; // return raw text if response is not JSON
+  }
+}
 
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
@@ -7,12 +21,28 @@ async function request(path, options = {}) {
     ...(options.headers || {})
   };
 
-  const res = await fetch(url, { ...options, headers });
-  const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  // Debug log (visible in browser console)
+  console.debug("[api] ->", options.method || "GET", url);
+
+  let res;
+  try {
+    res = await fetch(url, { ...options, headers });
+  } catch (networkErr) {
+    console.error("[api] Network error:", networkErr);
+    const err = new Error("Network error");
+    err.cause = networkErr;
+    throw err;
+  }
+
+  const text = await res.text().catch(() => "");
+  const data = await safeJson(text);
+
+  // Debug response
+  console.debug("[api] <-", { url, status: res.status, ok: res.ok, data });
 
   if (!res.ok) {
-    const err = new Error(data?.error || res.statusText);
+    const message = (data && data.error) || res.statusText || "API error";
+    const err = new Error(message);
     err.status = res.status;
     err.body = data;
     throw err;
