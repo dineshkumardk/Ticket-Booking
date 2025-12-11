@@ -74,19 +74,27 @@ export default function BookingPage() {
       </div>
 
       {/* ⭐ Seat Legend */}
-      <div className="seat-legend">
-        <div className="legend-item">
-          <div className="legend-color available"></div>
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          marginTop: "15px",
+          fontSize: "14px",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: 20, height: 20, background: "#3b82f6", borderRadius: 4 }}></div>
           Available
         </div>
 
-        <div className="legend-item">
-          <div className="legend-color booked"></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: 20, height: 20, background: "#ef4444", borderRadius: 4 }}></div>
           Booked
         </div>
 
-        <div className="legend-item">
-          <div className="legend-color selected"></div>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <div style={{ width: 20, height: 20, background: "#10b981", borderRadius: 4 }}></div>
           Selected
         </div>
       </div>
