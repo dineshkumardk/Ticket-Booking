@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:8082";
+const BASE = import.meta.env.VITE_API_BASE || "https://ticket-booking-l9aj.onrender.com";
 
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
