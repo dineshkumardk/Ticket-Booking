@@ -12,6 +12,11 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to Atlas
+if (!process.env.MONGO_URL) {
+  console.error('ERROR: MONGO_URL environment variable is not set!');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB Error:', err));
