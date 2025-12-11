@@ -10,7 +10,17 @@ export default function ShowListPage() {
     return <div style={{ padding: 20, color: "red" }}>Error: ShowContext not initialized</div>;
   }
 
-  const { shows, loading } = data;
+  const { shows, loading, error } = data;
+
+  if (error) {
+    return (
+      <div style={{ padding: 20, color: "red" }}>
+        <h1>Error Loading Shows</h1>
+        <p>{error}</p>
+        <p>Make sure the backend is running at: https://ticket-booking-l9aj.onrender.com</p>
+      </div>
+    );
+  }
 
   if (loading) return <Loader />;
 
